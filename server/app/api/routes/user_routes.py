@@ -25,16 +25,13 @@ async def login(
     user_data: UserLogin,
     user_service: UserService = Depends(get_user_service)
     ):
-    try:
-        token_pair = await user_service.login(user_data.email, user_data.password)
-        return {
-            "message": "User logged in successfully",
-            "access_token": token_pair[0],
-            "refresh_token": token_pair[1],
-            "token_type": "bearer"
-        }
-    except ValueError as e:
-        raise HTTPException(status_code=401, detail=str(e))
+    token_pair = await user_service.login(user_data.email, user_data.password)
+    return {
+        "message": "User logged in successfully",
+        "access_token": token_pair[0],
+        "refresh_token": token_pair[1],
+        "token_type": "bearer"
+    }
 
 @router.get("/me")
 async def get_me(

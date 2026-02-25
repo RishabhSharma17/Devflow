@@ -21,6 +21,12 @@ async def get_project_repository(db: Session = Depends(get_db)):
 async def get_project_service(project_repo: ProjectRepository = Depends(get_project_repository),user_repo: UserRepository = Depends(get_user_repository)):
     return ProjectService(project_repo,user_repo)
 
+async def get_task_repository(db: Session = Depends(get_db)):
+    return TaskRepository(db)
+
+async def get_task_service(task_repo: TaskRepository = Depends(get_task_repository),project_repo: ProjectRepository = Depends(get_project_repository)):
+    return TaskService(task_repo,project_repo)
+
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db = Depends(get_db) 

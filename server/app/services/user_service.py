@@ -5,6 +5,9 @@ class UserService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo=user_repo
 
+    async def create_index(self):
+        await self.user_repo.create_indexes()
+
     async def register(self,email: str,password: str):
         existing_user = await self.user_repo.get_user_by_email(email)
 

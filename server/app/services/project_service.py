@@ -1,10 +1,42 @@
+from app.exceptions.project_exception import UserAlreadyMemberError
+from app.exceptions.project_exception import UserNotFoundError
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.user_repository import UserRepository
+from app.exceptions.project_exception import *
+from bson import ObjectId
 
 class ProjectService:
     def __init__(self, project_repo: ProjectRepository, user_repo: UserRepository):
         self.project_repo = project_repo
+        self.user_repo = user_repo
     
+    async def _get_project_or_fail(self, project_id: str):
+        project = await self.project_repo.get_project_by_id(project_id)
+        if not project:
+            raise ProjectNotFoundError()
+        return project
+
+    def _get_member(self, project: dict, user_id: str):
+        try:
+            user_obj_id = ObjectId(user_id)
+        except Exception:
+            return None
+        user = next(
+            (m for m in project["members"]
+             if m["user_id"] == user_obj_id 
+            ),
+            None
+        )
+        return user
+
+    def _ensure_admin(self, project: dict, user_id: str):
+        member = self._get_member(project, user_id)
+        if not member:
+            raise NotProjectMemberError()
+
+        if member["role"] != "admin":
+            raise PermissionDeniedError()
+
     async def create_project(
         self,
         name: str,
@@ -24,31 +56,20 @@ class ProjectService:
         return await self.project_repo.get_users_project(user_id)
 
     async def add_member_to_project(
-    self,
-    project_id: str,
-    current_user: dict,
-    target_user_email: str,
-    user_repo,
+        self,
+        project_id: str,
+        current_user_id: str,
+        target_user_email: str,
         ):
-        project = await self.project_repo.get_project_by_id(project_id)
-
-        if not project:
-            raise ValueError("Project not found")
+        project = await self._get_project_or_fail(project_id)
 
         # Ensure current user is admin
-        is_admin = any(
-            str(member["user_id"]) == str(current_user["_id"])
-            and member["role"] == "admin"
-            for member in project["members"]
-        )
+        self._ensure_admin(project, current_user_id)
 
-        if not is_admin:
-            raise ValueError("Only admin can add members")
-
-        target_user = await user_repo.get_user_by_email(target_user_email)
+        target_user = await self.user_repo.get_user_by_email(target_user_email)
 
         if not target_user:
-            raise ValueError("User not found")
+            raise UserNotFoundError()
 
         result = await self.project_repo.add_member(
             project_id=project_id,
@@ -57,56 +78,45 @@ class ProjectService:
         )
 
         if result.modified_count == 0:
-            raise ValueError("User already a member")
+            raise UserAlreadyMemberError()
         
     async def remove_member(
         self,
-        user_id: str,
         project_id: str,
-        current_user: dict,
+        user_id: str,
+        current_user_id: str,
         ):
-        project = await self.project_repo.get_project_by_id(project_id)
+        project = await self._get_project_or_fail(project_id)
 
-        if not project:
-            raise ValueError("Project not found")
-        
-        is_admin = any(
-            str(member["user_id"]) == str(current_user["_id"])
-            and member["role"] == "admin"
-            for member in project["members"]
-        )
+        # Only admin can remove
+        self._ensure_admin(project, current_user_id)
 
-        if not is_admin:
-            raise ValueError("Only admin can remove members")
-        
+        # Owner cannot be removed
         if str(project["owner_id"]) == user_id:
-            raise ValueError("Owner cannot be removed")
-        
-        target_member = next(
-            (m for m in project["members"] 
-            if str(m["user_id"]) == user_id),
-            None,
-        )
+            raise CannotRemoveOwnerError()
+
+        target_member = self._get_member(project, user_id)
 
         if not target_member:
-            raise ValueError("User is not a member of the project")
-        
+            raise NotProjectMemberError()
+
         admin_count = sum(
             1 for m in project["members"]
             if m["role"] == "admin"
         )
 
         if (
-            admin_count == 1 
+            admin_count == 1
             and target_member["role"] == "admin"
         ):
-            raise ValueError("Cannot remove last admin")
-        
+            raise CannotRemoveLastAdminError()
+
         result = await self.project_repo.remove_member(
             project_id,
             user_id,
         )
 
         if result.modified_count == 0:
-            raise ValueError("Removal failed")
+            raise MemberRemovalFailedError()
 
+        return True

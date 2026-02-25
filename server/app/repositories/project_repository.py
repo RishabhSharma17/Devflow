@@ -83,7 +83,7 @@ class ProjectRepository:
         self,
         project_id,
         user_id,
-    ):
+        ):
         return await self.collection.update_one(
             {
                 "_id": ObjectId(project_id)
