@@ -1,15 +1,24 @@
 from app.repositories.user_repository import UserRepository
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.task_repository import TaskRepository
-from fastapi import FastAPI, Depends
-from app.core.database import get_db
-from app.core.config import settings
 from app.core.database import connect_to_Mongo, close_mongo_connection
 from app.api.routes.user_routes import router as user_router
 from app.api.routes.project_routes import router as project_router
 from app.core.exception_handlers import register_exception_handlers
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Depends
+from app.core.database import get_db
+from app.core.config import settings
 
 app = FastAPI(title=settings.APP_NAME)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 register_exception_handlers(app)
 

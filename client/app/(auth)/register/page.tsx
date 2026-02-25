@@ -1,0 +1,123 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { registerUser } from "@/lib/api/auth";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2, Zap } from "lucide-react";
+import { toast } from "sonner";
+
+export default function RegisterPage() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+        setLoading(true);
+        try {
+            await registerUser(email, password);
+            toast.success("Account created! Please sign in.");
+            router.push("/login");
+        } catch {
+            // Error handled by axios interceptor
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Card className="border-border/50 bg-card/80 shadow-2xl shadow-violet-500/5 backdrop-blur-md">
+            <CardHeader className="space-y-3 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
+                    <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                    <CardTitle className="text-2xl font-bold">Create account</CardTitle>
+                    <CardDescription className="mt-1">
+                        Get started with DevFlow today
+                    </CardDescription>
+                </div>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            minLength={8}
+                            maxLength={72}
+                            autoComplete="new-password"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="confirm-password">Confirm Password</Label>
+                        <Input
+                            id="confirm-password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            minLength={8}
+                            autoComplete="new-password"
+                        />
+                    </div>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-4">
+                    <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-violet-500/40 hover:brightness-110"
+                        disabled={loading}
+                    >
+                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Create Account
+                    </Button>
+                    <p className="text-center text-sm text-muted-foreground">
+                        Already have an account?{" "}
+                        <Link
+                            href="/login"
+                            className="font-medium text-violet-500 transition-colors hover:text-violet-400"
+                        >
+                            Sign in
+                        </Link>
+                    </p>
+                </CardFooter>
+            </form>
+        </Card>
+    );
+}

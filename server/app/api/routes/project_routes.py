@@ -1,5 +1,4 @@
 from fastapi import Depends, HTTPException, status, APIRouter
-from app.schemas.project import ProjectCreate
 from app.api.deps import get_current_user,get_project_service
 from app.exceptions.project_exception import *
 from app.utils.serialize import serialize_project
