@@ -85,7 +85,7 @@ export function Sidebar() {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 rounded-lg text-muted-foreground hover:text-foreground"
+                            className="h-10 w-10 rounded-lg cursor-pointer text-muted-foreground hover:text-foreground"
                             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                         >
                             <Sun className="h-5 w-5 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
@@ -102,7 +102,7 @@ export function Sidebar() {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 rounded-lg text-muted-foreground hover:text-destructive"
+                            className="h-10 w-10 cursor-pointer rounded-lg text-muted-foreground hover:text-destructive"
                             onClick={handleLogout}
                         >
                             <LogOut className="h-5 w-5" />

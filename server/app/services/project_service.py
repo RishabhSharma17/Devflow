@@ -1,3 +1,4 @@
+from app.exceptions.project_exception import NotProjectMemberError
 from app.exceptions.project_exception import UserAlreadyMemberError
 from app.exceptions.project_exception import UserNotFoundError
 from app.repositories.project_repository import ProjectRepository
@@ -42,11 +43,13 @@ class ProjectService:
         name: str,
         description: str,
         user_id: str,
+        email: str
         ):
         return await self.project_repo.create_project(
             name=name,
             description=description,
             user_id=user_id,
+            email=email
         )
     
     async def get_my_projects(
@@ -54,6 +57,36 @@ class ProjectService:
         user_id: str
     ):
         return await self.project_repo.get_users_project(user_id)
+
+    async def change_role(
+        self,
+        project_id: str,
+        current_user_id: str,
+        target_user_id: str,
+        role: str
+        ):
+        project = await self._get_project_or_fail(project_id)
+
+        self._ensure_admin(project, current_user_id)
+
+        target_member = self._get_member(project, target_user_id)
+
+        if not target_member:
+            raise NotProjectMemberError()
+        
+        if not role in ["admin", "member"]:
+            raise InvalidRoleError()
+        
+        result = await self.project_repo.change_role(
+            project_id=project_id,
+            target_user_id=target_user_id,
+            role=role,
+        )
+
+        if result.modified_count == 0:
+            raise RoleChangeFailedError()
+        
+        return True
 
     async def add_member_to_project(
         self,
@@ -74,6 +107,7 @@ class ProjectService:
         result = await self.project_repo.add_member(
             project_id=project_id,
             user_id=str(target_user["_id"]),
+            user_email=target_user["email"],
             role="member",
         )
 

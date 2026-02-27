@@ -7,6 +7,9 @@ class MemberResponse(BaseModel):
     user_id: str
     role: str
 
+class ProjectCreate(BaseModel):
+    name: str
+    description: Optional[str]
 
 class ProjectResponse(BaseModel):
     id: str

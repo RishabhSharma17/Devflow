@@ -3,6 +3,7 @@ from app.core.security import create_access_token, decode_token
 from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.user import UserCreate, UserLogin
 from app.services.user_service import UserService
+from app.utils.serialize import serialize_users
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -42,6 +43,13 @@ async def get_me(
         "email": user["email"],
         "provider": user["provider"]
     }
+
+@router.get("/all")
+async def get_all_users(
+    user_service: UserService = Depends(get_user_service)
+    ):
+    users = await user_service.get_all_users()
+    return serialize_users(users)
 
 @router.post("/refresh")
 async def refresh_token(refresh_token: str):

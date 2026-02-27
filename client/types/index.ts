@@ -2,6 +2,7 @@ export type TaskStatus = "todo" | "in_progress" | "done";
 
 export interface Member {
     user_id: string;
+    user_email: string;
     role: "admin" | "member";
 }
 

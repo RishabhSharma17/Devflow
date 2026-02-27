@@ -13,7 +13,8 @@ class ProjectRepository:
         self,
         name: str,
         description: str,
-        user_id: str
+        user_id: str,
+        email: str
         ):
         now = datetime.now(timezone.utc)
         project={
@@ -23,6 +24,7 @@ class ProjectRepository:
             "members": [
                 {
                     "user_id": ObjectId(user_id),
+                    "user_email": str(email),
                     "role": "admin"
                 }
             ],
@@ -49,10 +51,29 @@ class ProjectRepository:
             "members.user_id": ObjectId(user_id)
         }).to_list(length=100)
     
+    async def change_role(
+        self,
+        project_id: str,
+        target_user_id: str,
+        role: str
+        ):
+        return await self.collection.update_one(
+            {
+                "_id": ObjectId(project_id),
+                "members.user_id": ObjectId(target_user_id)
+            },
+            {
+                "$set": {
+                    "members.$.role": role
+                }
+            }
+        )
+
     async def add_member(
         self,
         project_id: str,
         user_id: str,
+        user_email: str,
         role: str = "member"
         ):
         return await self.collection.update_one(
@@ -70,6 +91,7 @@ class ProjectRepository:
                 "$push": {
                     "members": {
                         "user_id": ObjectId(user_id),
+                        "user_email": user_email,
                         "role": role
                     }
                 },

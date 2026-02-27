@@ -22,6 +22,11 @@ export async function getMe(): Promise<User> {
     return data;
 }
 
+export async function getAllUsers(): Promise<User[]> {
+    const { data } = await api.get("/users/all");
+    return data;
+}
+
 export async function refreshAccessToken(
     refreshToken: string
 ): Promise<{ access_token: string; token_type: string }> {

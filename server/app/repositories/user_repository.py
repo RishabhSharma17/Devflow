@@ -36,6 +36,10 @@ class UserRepository:
         result = await self.collection.insert_one(user)
         return str(result.inserted_id)
         
+    async def get_all_users(self):
+        users = await self.collection.find({}).to_list(length=None)
+        return users
+
     async def get_user_by_email(self, email: str):
         return await self.collection.find_one({"email": email})
 

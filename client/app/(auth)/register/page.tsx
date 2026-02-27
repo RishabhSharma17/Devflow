@@ -98,7 +98,7 @@ export default function RegisterPage() {
                         />
                     </div>
                 </CardContent>
-                <CardFooter className="flex flex-col gap-4">
+                <CardFooter className="flex mt-6 flex-col gap-4">
                     <Button
                         type="submit"
                         className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-violet-500/40 hover:brightness-110"

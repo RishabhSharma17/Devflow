@@ -1,5 +1,14 @@
 from bson import ObjectId
 
+def serialize_users(users: list) -> list:
+    return [
+        {
+            "id": str(user["_id"]),
+            "email": user["email"],
+            "role": user["role"]
+        } for user in users
+    ]
+
 def serialize_project(project: dict) -> dict:
     project["id"] = str(project["_id"])
     project["owner_id"] = str(project["owner_id"])

@@ -27,6 +27,7 @@ export default function ProjectPage() {
 
     const project = projects?.find((p) => p.id === projectId);
 
+    console.log(project)
     const { data: tasks = [], isLoading: tasksLoading } = useQuery({
         queryKey: ["tasks", projectId],
         queryFn: () => getTasks(projectId),
@@ -75,11 +76,11 @@ export default function ProjectPage() {
                     {/* Tabs: Board & Members */}
                     <Tabs defaultValue="board" className="space-y-4">
                         <TabsList className="bg-card/50">
-                            <TabsTrigger value="board" className="gap-1.5">
+                            <TabsTrigger value="board" className="gap-1.5 cursor-pointer">
                                 <KanbanSquare className="h-4 w-4" />
                                 Board
                             </TabsTrigger>
-                            <TabsTrigger value="members" className="gap-1.5">
+                            <TabsTrigger value="members" className="gap-1.5 cursor-pointer">
                                 <Users className="h-4 w-4" />
                                 Members
                                 {project && (
@@ -119,7 +120,7 @@ export default function ProjectPage() {
 
                         <TabsContent value="members" className="mt-0">
                             {project ? (
-                                <div className="max-w-xl">
+                                <div className="min-h-100">
                                     <MembersPanel
                                         projectId={projectId}
                                         members={project.members}

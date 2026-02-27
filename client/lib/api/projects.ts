@@ -36,3 +36,18 @@ export async function removeMember(
     );
     return data;
 }
+
+export async function updateMemberRole(
+    projectId: string,
+    user_id: string,
+    role: string
+): Promise<{ message: string }> {
+    const { data } = await api.patch(
+        `/projects/${projectId}/change-role`,
+        null,
+        {
+            params: { target_user_id: user_id, role },
+        }
+    );
+    return data;
+}

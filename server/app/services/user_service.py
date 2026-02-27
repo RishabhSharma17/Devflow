@@ -24,6 +24,9 @@ class UserService:
 
         return user_id
 
+    async def get_all_users(self):
+        return await self.user_repo.get_all_users()
+
     async def login(self,email: str,password: str) -> str:
         user = await self.user_repo.get_user_by_email(email)
         
