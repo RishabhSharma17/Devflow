@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const api = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
     headers: {
         "Content-Type": "application/json",
     },
