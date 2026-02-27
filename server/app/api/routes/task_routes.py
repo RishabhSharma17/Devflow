@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.api.deps import get_current_user, get_task_service
-from app.schemas.task_schemas import TaskCreate, TaskUpdate, TaskResponse
+from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse, TaskStatusUpdate
 from app.exceptions.project_exception import (
     ProjectNotFoundError,
     NotProjectMemberError,
@@ -21,7 +21,7 @@ async def create_task(
     current_user=Depends(get_current_user),
     task_service=Depends(get_task_service),
     ):
-    task = task_service.create_task(
+    task_id = await task_service.create_task(
         project_id=project_id,
         current_user_id=str(current_user["_id"]),
         title=task_data.title,
@@ -29,7 +29,10 @@ async def create_task(
         assigned_to=task_data.assigned_to
     )
 
-    return serialize_task(task)
+    return {
+        "message": "Task created successfully",
+        "task_id": task_id
+    }
 
 @router.get("/")
 async def get_tasks(
@@ -40,12 +43,12 @@ async def get_tasks(
     current_user=Depends(get_current_user),
     task_service=Depends(get_task_service),
     ):
-    tasks = task_service.get_tasks(
+    tasks = await task_service.list_tasks(
         project_id=project_id,
         current_user_id=str(current_user["_id"]),
         skip=skip,
         limit=limit,
-        status_filter=status_filter
+        status=status_filter
     )
 
     return [serialize_task(task) for task in tasks]

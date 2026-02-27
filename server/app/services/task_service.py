@@ -32,7 +32,7 @@ class TaskService:
         )
     
     async def _ensure_member(self,project: dict,user_id: str):
-        member = self._get_member(project,user_id)
+        member = await self._get_member(project,user_id)
         if not member:
             raise NotProjectMemberError()
         return member
@@ -52,7 +52,7 @@ class TaskService:
         description: str|None,
         assigned_to: str|None,
         ):
-        project = self._get_project_or_fail(project_id)
+        project = await self._get_project_or_fail(project_id)
 
         self._ensure_admin(project,current_user_id)
 
@@ -79,7 +79,7 @@ class TaskService:
         ):
         project = await self._get_project_or_fail(project_id)
         self._ensure_member(project,current_user_id)
-        return await self.task_repo.get_tasks_by_project(
+        return await self.task_repo.list_tasks(
             project_id=project_id,
             skip=skip,
             limit=limit,
@@ -119,15 +119,15 @@ class TaskService:
         new_status: str
         ):
         project = await self._get_project_or_fail(project_id)
-        member = self._ensure_member(project,current_user_id)
-        task = await self.task_repo.get_task_by_id(task_id)
-        
+        member = await self._ensure_member(project,current_user_id)
+        task = await self.task_repo.get_task_by_id(task_id,project_id)
+
         if not task:
             raise TaskNotFoundError()
         
-        if member["role"] == "admin":
-            if not str(task["assigned_to"]) or task["assigned_to"] == current_user_id:
-                raise PermissionDeniedError()
+        if member["role"]!="admin" and current_user_id!=task["assigned_to"]:
+            raise PermissionDeniedError()
+            
         
         return await self.task_repo.update_task(
             task_id=task_id,

@@ -26,7 +26,7 @@ interface KanbanBoardProps {
 
 const columns: { status: TaskStatus; title: string; accent: string }[] = [
     { status: "todo", title: "To Do", accent: "bg-blue-500" },
-    { status: "in_progress", title: "In Progress", accent: "bg-amber-500" },
+    { status: "in_progress", title: "In_Progress", accent: "bg-amber-500" },
     { status: "done", title: "Done", accent: "bg-emerald-500" },
 ];
 
@@ -119,7 +119,7 @@ export function KanbanBoard({ tasks, projectId, isAdmin }: KanbanBoardProps) {
 
             <DragOverlay>
                 {activeTask && (
-                    <div className="w-[280px] rotate-3 scale-105">
+                    <div className="w-70 rotate-3 scale-105">
                         <TaskCard
                             task={activeTask}
                             projectId={projectId}

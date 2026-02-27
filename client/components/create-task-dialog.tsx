@@ -43,7 +43,7 @@ export function CreateTaskDialog({ projectId, members }: CreateTaskDialogProps) 
             createTask(projectId, {
                 title,
                 description: description || undefined,
-                assigned_to: assignedTo || undefined,
+                assigned_to: assignedTo=="unassigned"?"":assignedTo || undefined,
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
@@ -60,13 +60,13 @@ export function CreateTaskDialog({ projectId, members }: CreateTaskDialogProps) 
             <DialogTrigger asChild>
                 <Button
                     size="sm"
-                    className="gap-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-500/20"
+                    className="gap-1.5 cursor-pointer bg-linear-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-500/20"
                 >
                     <Plus className="h-4 w-4" />
                     Add Task
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-106.25">
                 <DialogHeader>
                     <DialogTitle>Create Task</DialogTitle>
                     <DialogDescription>
@@ -110,8 +110,8 @@ export function CreateTaskDialog({ projectId, members }: CreateTaskDialogProps) 
                                 <SelectContent>
                                     <SelectItem value="unassigned">Unassigned</SelectItem>
                                     {members.map((m) => (
-                                        <SelectItem key={m.user_id} value={m.user_id}>
-                                            {m.user_id} ({m.role})
+                                        <SelectItem key={m.user_id} value={m.user_email}>
+                                            {m.user_email} ({m.role})
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -129,7 +129,7 @@ export function CreateTaskDialog({ projectId, members }: CreateTaskDialogProps) 
                         <Button
                             type="submit"
                             disabled={!title.trim() || mutation.isPending}
-                            className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white"
+                            className="bg-linear-to-r cursor-pointer from-violet-600 to-indigo-600 text-white"
                         >
                             {mutation.isPending && (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

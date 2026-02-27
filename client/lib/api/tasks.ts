@@ -26,6 +26,7 @@ export async function createTask(
     projectId: string,
     payload: CreateTaskPayload
 ): Promise<Task> {
+    console.log(payload)
     const { data } = await api.post("/tasks", payload, {
         params: { project_id: projectId },
     });
@@ -50,7 +51,7 @@ export async function updateTaskStatus(
 ): Promise<Task> {
     const { data } = await api.patch(
         `/tasks/${taskId}/status`,
-        { status },
+        { "status": status },
         { params: { project_id: projectId } }
     );
     return data;

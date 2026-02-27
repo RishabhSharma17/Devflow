@@ -27,12 +27,13 @@ export default function ProjectPage() {
 
     const project = projects?.find((p) => p.id === projectId);
 
-    console.log(project)
     const { data: tasks = [], isLoading: tasksLoading } = useQuery({
         queryKey: ["tasks", projectId],
         queryFn: () => getTasks(projectId),
         enabled: !!projectId,
     });
+
+    console.log(tasks)
 
     const isAdmin =
         project?.members.some(

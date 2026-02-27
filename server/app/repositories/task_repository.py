@@ -32,7 +32,7 @@ class TaskRepository:
             "description": description,
             "status": "todo",
             "created_by": ObjectId(created_by),
-            "assigned_to": ObjectId(assigned_to) if assigned_to else None,
+            "assigned_to": assigned_to if assigned_to else None,
             "created_at": now,
             "updated_at": now
         }
@@ -90,4 +90,16 @@ class TaskRepository:
                 "$set": update_data
             },
             return_document=True,
+        )
+    
+    async def delete_task(
+        self,
+        project_id: str,
+        task_id: str
+        ):
+        return await self.collection.find_one_and_delete(
+            {
+                "_id": ObjectId(task_id),
+                "project_id": ObjectId(project_id)
+            }
         )

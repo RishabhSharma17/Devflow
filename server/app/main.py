@@ -4,6 +4,7 @@ from app.repositories.task_repository import TaskRepository
 from app.core.database import connect_to_Mongo, close_mongo_connection
 from app.api.routes.user_routes import router as user_router
 from app.api.routes.project_routes import router as project_router
+from app.api.routes.task_routes import router as task_router
 from app.core.exception_handlers import register_exception_handlers
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends
@@ -24,6 +25,7 @@ register_exception_handlers(app)
 
 app.include_router(user_router)
 app.include_router(project_router)
+app.include_router(task_router)
 
 @app.on_event("startup")
 async def startup_event():

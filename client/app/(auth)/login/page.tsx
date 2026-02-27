@@ -44,7 +44,7 @@ export default function LoginPage() {
     return (
         <Card className="border-border/50 bg-card/80 shadow-2xl shadow-violet-500/5 backdrop-blur-md">
             <CardHeader className="space-y-3 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
                     <Zap className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -85,7 +85,7 @@ export default function LoginPage() {
                 <CardFooter className="flex mt-6 flex-col gap-4">
                     <Button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-violet-500/40 hover:brightness-110"
+                        className="w-full cursor-pointer bg-linear-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-violet-500/40 hover:brightness-110"
                         disabled={loading}
                     >
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

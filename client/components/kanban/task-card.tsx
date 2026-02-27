@@ -71,7 +71,7 @@ export function TaskCard({ task, projectId, isAdmin }: TaskCardProps) {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 shrink-0 opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive"
+                            className="h-6 w-6 cursor-pointer shrink-0 opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 deleteMutation.mutate();
@@ -88,13 +88,16 @@ export function TaskCard({ task, projectId, isAdmin }: TaskCardProps) {
                         </CardDescription>
                     )}
                     {task.assigned_to && (
-                        <Badge
-                            variant="secondary"
-                            className="gap-1 text-[10px] font-normal"
-                        >
-                            <User className="h-2.5 w-2.5" />
-                            {task.assigned_to.substring(0, 8)}...
-                        </Badge>
+                        <span>
+                            <span className="h-2.5 w-2.5 text-sm">Assigned to : </span>
+                            <Badge
+                                variant="secondary"
+                                className="gap-1 text-sm font-normal"
+                            >
+                                <User className="h-1.5 w-1.5" />
+                                {task.assigned_to}
+                            </Badge>
+                        </span>
                     )}
                 </CardContent>
             </Card>
