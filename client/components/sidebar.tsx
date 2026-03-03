@@ -41,10 +41,10 @@ export function Sidebar() {
     };
 
     return (
-        <aside className="flex h-screen w-[68px] flex-col items-center border-r border-border bg-card py-4">
+        <aside className="flex h-screen w-17 flex-col items-center border-r border-border bg-card py-4">
             {/* Logo */}
             <Link href="/dashboard" className="mb-6 flex items-center justify-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-violet-600 to-indigo-600 shadow-lg shadow-violet-500/25">
                     <Zap className="h-5 w-5 text-white" />
                 </div>
             </Link>

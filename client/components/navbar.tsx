@@ -44,7 +44,7 @@ export function Navbar({ title }: NavbarProps) {
                     <DropdownMenuTrigger asChild>
                         <button className="flex items-center gap-2 rounded-full outline-none ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                             <Avatar className="h-12 w-12 border-2 border-violet-500/30">
-                                <AvatarFallback className="bg-gradient-to-br from-violet-600 to-indigo-600 text-xl font-semibold text-white">
+                                <AvatarFallback className="bg-linear-to-br from-violet-600 to-indigo-600 text-xl font-semibold text-white">
                                     {initials}
                                 </AvatarFallback>
                             </Avatar>
